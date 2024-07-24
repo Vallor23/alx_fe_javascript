@@ -15,7 +15,7 @@ const newQuoteCategory = document.getElementById('newQuoteCategory').value;
 function showRandomQuote(){
     const randomIndex = Math.floor(Math.random()*quotes.length)
     const quoteDisplay = document.getElementById('quoteDisplay');
-    quoteDisplay.textContent = quotes[randomIndex].text;
+    quoteDisplay.innerHTML = quotes[randomIndex].text;
     quoteDisplay.style.background = 'rgb(145, 213, 240)';
 }
 // Function to add a new quote

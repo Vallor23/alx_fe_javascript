@@ -101,6 +101,30 @@ function exportQuotes(){
     URL.revokeObjectURL(url)//Revoke the Blob to free up memory
 }
 
+//Function to import files from a json file
+function importFromJsonFile() {
+    const fileReader = new FileReader();//Creates a new Filereader instance to read the file
+
+    fileReader.onload = function (event) {//Sets up an event handler that will be called when file has been successfully read
+    try {
+        const importedQuotes = JSON.parse(event.target.result);
+
+        //Validate the implemented data
+        if(Array.isArray(importedQuotes) && importedQuotes.every(quote => quote.text && quote.category)) {
+            quotes.push(...importedQuotes);
+            saveQuotes();
+            alert('Quotes imported successfully!');
+        } else{
+            alert('Invalid JSON format.Please upload a valid quotes file')
+        }
+    } catch (error) {
+        alert('Error reading file. Please ensure its a valid JSON file')
+    }   
+    };
+    // Read the content of the selected file as text
+    fileReader.readAsText(event.target.files[0]);
+}
+
 // Event listener for showing a new quote
 showNewQuote.addEventListener('click', showRandomQuote);
 

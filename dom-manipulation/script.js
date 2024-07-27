@@ -47,7 +47,6 @@ function showRandomQuote(){
     const quoteDisplay = document.getElementById('quoteDisplay');
     const randomQuote = quotes[randomIndex].text;
     quoteDisplay.innerHTML = randomQuote;
-    quoteDisplay.style.background = 'rgb(145, 213, 240)';
     saveLastViewedQuote(randomQuote);//save the last viewed quote to session storage
 }
 
@@ -125,6 +124,35 @@ function importFromJsonFile() {
     fileReader.readAsText(event.target.files[0]);
 }
 
+// Populate the dropdown with unique categories
+function populateCategories() {
+    //create a set to store unique categories
+    const uniqueCategories = new Set();
+
+    //loop through the quotes array and collect unique categories
+    quotes.forEach(quote => {
+        uniqueCategories.add(quote.category);
+    });
+
+    const categoryFilter = document.getElementById('categoryFilter');
+    categoryFilter.innerHTML = ''; // Clear existing options
+
+    //create and append options to the dropdown
+    uniqueCategories.forEach(category => {
+      const option = document.createElement('option');
+      option.value = category;
+      option.textContent = category;
+      categoryFilter.appendChild(option);
+    });
+  }
+
+  // Filter quotes based on selected category
+  function filterQuotes() {
+    const selectedCategory = categoryFilter.value;
+    const filterQuotes =quotes.filter(quote => quote.category === selectedCategory);
+    quoteDisplay.innerHTML = filterQuotes.map(quote => quote.text).join ('<br>'); 
+  }
+  populateCategories();
 // Event listener for showing a new quote
 showNewQuote.addEventListener('click', showRandomQuote);
 
@@ -132,4 +160,6 @@ showNewQuote.addEventListener('click', showRandomQuote);
 document.getElementById('exportQuotes').addEventListener('click', exportQuotes);
 
 // Call the function to create the form on page load
+
+
 createAddQuoteForm();

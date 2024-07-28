@@ -206,7 +206,7 @@ async function postQuoteToServer(quote){
     }
 }
 // Function to start periodic fetching
-function startPeriodicFetching(){
+function syncQuotes(){
     setInterval(async() => {
         const serverQuotes = await fetchQuotesFromServer();
         //Merge server quotes with local quotes and handle conflicts
@@ -214,42 +214,45 @@ function startPeriodicFetching(){
     },6000);
 }
 //// Function to merge server quotes with local quotes
-// function mergeQuotes(serverQuotes){
-//     const localQuotes = JSON.parse(localStorage.getItem('quotes')) || [];
-//     const mergedQuotes = [...localQuotes];
+function mergeQuotes(serverQuotes){
+    const localQuotes = JSON.parse(localStorage.getItem('quotes')) || [];
+    const mergedQuotes = [...localQuotes];
 
-//     serverQuotes.forEach(serverQuote => {
-//         const existingQuote = mergedQuotes.find(quote => quote.text === serverQuote.text);
-//         if(!existingQuote){
-//             mergedQuotes.push(serverQuote)
-//         }
-//     });
+    serverQuotes.forEach(serverQuote => {
+        const existingQuote = mergedQuotes.find(quote => quote.text === serverQuote.text);
+        if(!existingQuote){
+            mergedQuotes.push(serverQuote)
+        }
+    });
 
-//     localStorage.setItem('quotes', JSON.stringify(mergedQuotes));
-//     displayQuotes(mergedQuotes);//Update the displayed quotes
-// }
-// //Update the displayedQuotes to show the merged quotes
-// function displayQuotes(quotes) {
-//     quoteDisplay.innerHTML = quotes.map(quote => quote.text).join('<br>');
-// }
+    localStorage.setItem('quotes', JSON.stringify(mergedQuotes));
+    displayQuotes(mergedQuotes);//Update the displayed quotes
 
-// function notifyUser(message){
-//     const notification = document.createElement('div');
-//     notification.innerHTML = message;
-//     document.body.appendChild(notification);
-//     setTimeout(() => {
-//         document.body.removeChild(notification);
-//     }, 3000);//Remove notification after 3 seconds
-// }
+     // Call syncQuotes to ensure synchronization
+     syncQuotes();
+}
+//Update the displayedQuotes to show the merged quotes
+function displayQuotes(quotes) {
+    quoteDisplay.innerHTML = quotes.map(quote => quote.text).join('<br>');
+}
 
-// // Function to initialize the applicatio
-// async function initializeApp() {
-//     const initialQuotes = await fetchQuotesFromServer();
-//     mergeQuotes(initialQuotes);
-//     startPeriodicFetching();//Start periodic fetching
-//   }
-//   // Call the initialization function when the page loads
-//   initializeApp();
+function notifyUser(message){
+    const notification = document.createElement('div');
+    notification.innerHTML = message;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        document.body.removeChild(notification);
+    }, 3000);//Remove notification after 3 seconds
+}
+
+// Function to initialize the applicatio
+async function initializeApp() {
+    const initialQuotes = await fetchQuotesFromServer();
+    mergeQuotes(initialQuotes);
+    // startPeriodicFetching();//Start periodic fetching
+  }
+  // Call the initialization function when the page loads
+  initializeApp();
 
 //Call this when the page loads
 applyLastSelectedCategory();

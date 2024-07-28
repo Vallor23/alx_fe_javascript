@@ -135,7 +135,7 @@ function populateCategories() {
     });
 
     const categoryFilter = document.getElementById('categoryFilter');
-    categoryFilter.innerHTML = ''; // Clear existing options
+    // categoryFilter.innerHTML = ''; // Clear existing options
 
     //create and append options to the dropdown
     uniqueCategories.forEach(category => {
@@ -146,13 +146,34 @@ function populateCategories() {
     });
   }
 
-  // Filter quotes based on selected category
-  function filterQuotes() {
-    const selectedCategory = categoryFilter.value;
-    const filterQuotes =quotes.filter(quote => quote.category === selectedCategory);
-    quoteDisplay.innerHTML = filterQuotes.map(quote => quote.text).join ('<br>'); 
-  }
-  populateCategories();
+// Filter quotes based on selected category
+function filterQuotes() {
+    const selectedCategory = categoryFilter.value;// Get the selected category from the dropdown menu
+    const filterQuotesArray =quotes.filter(quote => quote.category === selectedCategory);// Filter the quotes based on the selected category
+    quoteDisplay.innerHTML = filterQuotesArray.map(quote => quote.text).join ('<br>'); // Update the displayed quotes in the DOM
+
+    // Save the last selected category to local storage
+  saveLastSelectedCategory(selectedCategory);
+}
+    //When user selects a category , save it to local storage
+function saveLastSelectedCategory(selectedCategory){
+    localStorage.setItem('lastSelectedCategory', selectedCategory);
+}
+
+//When page loads,retrieve the last selected category from local storage aand apply it as the initial filter
+function applyLastSelectedCategory(){
+    const lastSelectedCategory = localStorage.getItem('lastSelectedCategory');
+    if(lastSelectedCategory){
+        categoryFilter.value = lastSelectedCategory;
+        filterQuotes();//Apply the filter
+    }
+    
+}
+populateCategories();
+
+//Call this when the page loads
+applyLastSelectedCategory();
+
 // Event listener for showing a new quote
 showNewQuote.addEventListener('click', showRandomQuote);
 
@@ -160,6 +181,4 @@ showNewQuote.addEventListener('click', showRandomQuote);
 document.getElementById('exportQuotes').addEventListener('click', exportQuotes);
 
 // Call the function to create the form on page load
-
-
 createAddQuoteForm();

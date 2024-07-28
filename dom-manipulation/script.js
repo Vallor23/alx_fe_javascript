@@ -228,6 +228,8 @@ function mergeQuotes(serverQuotes){
     localStorage.setItem('quotes', JSON.stringify(mergedQuotes));
     displayQuotes(mergedQuotes);//Update the displayed quotes
 
+    notifyUser('Quotes synced with server!');
+    
      // Call syncQuotes to ensure synchronization
      syncQuotes();
 }
